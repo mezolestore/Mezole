@@ -8,6 +8,7 @@
     'depends': ['base', 'sale', 'stock'],
     'data': [
         "views/product_template.xml",
+        "views/mz_barcode_layout_38x25.xml",
     ],
 
     'license': 'OPL-1',
