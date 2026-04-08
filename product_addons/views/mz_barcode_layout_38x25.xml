@@ -16,7 +16,11 @@
 
 ^FT40,50^A0N,25,20^FD<t t-out="product_info['display_name_markup']"/>^FS
 
-<t t-if="product.default_code and len(product.default_code) &gt; 15">
+<t t-if="product.categ_id and product.categ_id.name">
+^FT80,130^A0N,30,24^FD<t t-out="product.categ_id.name"/>^FS
+</t>
+
+<t t-elif="product.default_code and len(product.default_code) &gt; 15">
 ^FT80,130^A0N,30,24^FD<t t-out="product_info['default_code'][0]"/>^FS
 ^FT40,80^A0N,20,18^FD<t t-out="product_info['default_code'][1]"/>^FS
 </t>
@@ -25,7 +29,7 @@
 </t>
 
 <t t-if="price_included">
-^FO200,70,1
+^FO250,70,1
 <t t-if="currency_id.position == 'after'">
 ^A0N,30,25^FH^FD<t t-esc="pricelist._get_product_price(product, 1, currency_id)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><t t-esc="currency_id.symbol"/>^FS
 </t>
@@ -53,7 +57,11 @@
 
 ^FT360,50^A0N,25,20^FD<t t-out="product_info['display_name_markup']"/>^FS
 
-<t t-if="product.default_code and len(product.default_code) &gt; 15">
+<t t-if="product.categ_id and product.categ_id.name">
+^FT80,130^A0N,30,24^FD<t t-out="product.categ_id.name"/>^FS
+</t>
+
+<t t-elif="product.default_code and len(product.default_code) &gt; 15">
 ^FT400,130^A0N,30,24^FD<t t-out="product_info['default_code'][0]"/>^FS
 ^FT360,80^A0N,20,18^FD<t t-out="product_info['default_code'][1]"/>^FS
 </t>
@@ -62,7 +70,7 @@
 </t>
 
 <t t-if="price_included">
-^FO520,70,1
+^FO550,70,1
 <t t-if="currency_id.position == 'after'">
 ^A0N,30,25^FH^FD<t t-esc="pricelist._get_product_price(product, 1, currency_id)" t-options="{&quot;widget&quot;: &quot;float&quot;, &quot;precision&quot;: 2}"/><t t-esc="currency_id.symbol"/>^FS
 </t>
