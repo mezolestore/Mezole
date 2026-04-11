@@ -14,7 +14,14 @@
 ^PW600
 ^LL200
 
-^FT30,50^A0N,22,20^FD<t t-out="product_info['display_name_markup']"/>^FS
+<t t-if="len(product_info['display_name_markup']) &lt; 20">
+    ^FT30,50^A0N,25,20^FD<t t-out="product_info['display_name_markup']"/>^FS
+</t>
+
+<t t-else="">
+    ^FT30,50^A0N,18,17^FD<t t-out="product_info['display_name_markup']"/>^FS
+</t>
+
 
 <t t-if="product.categ_id and product.categ_id.name">
 ^FT30,75^A0N,22,18^FD<t t-out="product.categ_id.name"/>^FS
@@ -48,7 +55,14 @@
 
 ^FT30,188^A0N,22,20^FD<t t-esc="today.strftime('%B')[:2].upper() + today.strftime('%y')"/>^FS
 
-^FT360,50^A0N,25,20^FD<t t-out="product_info['display_name_markup']"/>^FS
+<t t-if="len(product_info['display_name_markup']) &lt; 20">
+    ^FT350,50^A0N,25,20^FD<t t-out="product_info['display_name_markup']"/>^FS
+</t>
+
+<t t-else="">
+    ^FT350,50^A0N,18,17^FD<t t-out="product_info['display_name_markup']"/>^FS
+</t>
+
 
 <t t-if="product.categ_id and product.categ_id.name">
 ^FT360,75^A0N,22,18^FD<t t-out="product.categ_id.name"/>^FS
@@ -67,7 +81,7 @@
 
 <t t-if="barcode">
     <t t-if="len(barcode) &lt; 9">
-        ^FO360,110^BY2
+        ^FO350,110^BY2
         ^BCN,55,Y,N,N
         ^FD<t t-out="barcode"/>^FS
     </t>
