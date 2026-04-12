@@ -13,6 +13,10 @@
                 </group>
             </xpath>
     
+            <xpath expr="//div[@name='list_price_uom']" position="after">
+                <field name="mrp_price" />
+            </xpath>
+    
         </field>
     </record>
 </odoo>
