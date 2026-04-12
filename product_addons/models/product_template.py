@@ -19,7 +19,8 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     _inherit = 'product.product'
     
-    mrp_price = fields.Float(string='MRP Price')
+    mrp_price = fields.Float(string='MRP Price', related='product_tmpl_id.mrp_price', store=True)
+    
     @api.model_create_multi
     def create(self, vals_list):
         for val in vals_list:
