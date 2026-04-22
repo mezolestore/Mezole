@@ -7,6 +7,7 @@ class ProductTemplate(models.Model):
     product_size = fields.Char(string='Product Size')
     upc_code = fields.Char(string='UPC Code')
     mrp_price = fields.Float(string='MRP Price')
+    is_upt_counted = fields.Boolean(string='Is UPT Counted')
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -31,3 +32,20 @@ class ProductProduct(models.Model):
             if not val.get('barcode'):
                 val['barcode'] = self.env['ir.sequence'].next_by_code('product.barcode')
         return super(ProductProduct, self).create(vals_list)
+    
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+    
+    how_know_us = fields.Selection([
+        ('walk_in', 'Walk-in'),
+        ('nearby', 'Nearby Resident'),
+        ('google', 'Google Search'),
+        ('instagram', 'Instagram'),
+        ('facebook', 'Facebook'),
+        ('friend', 'Friend/Referral'),
+        ('existing_customer', 'Existing Customer'),
+        ('hoarding', 'Hoarding/Banner'),
+        ('newspaper', 'Newspaper/Magazine'),
+        ('event', 'Event/Promotion'),
+        ('other', 'Other'),
+    ], string='How did you hear about us?')

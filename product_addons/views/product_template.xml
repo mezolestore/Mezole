@@ -10,13 +10,32 @@
                     <field name="product_color"/>
                     <field name="product_size"/>
                     <field name="upc_code"/>
+                    <field name="is_upt_counted"/>
                 </group>
             </xpath>
     
-            <xpath expr="//div[@name='list_price_uom']" position="after">
-                <field name="mrp_price" />
+        </field>
+    </record>
+    <record id="view_pos_order_pivot_inherit_custom_fields" model="ir.ui.view">
+        <field name="name">pos.order.pivot.inherit.custom.fields</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_pivot"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_total']" position="after">
+                <field name="a_b_value" type="measure"/>
+                <field name="upt_value" type="measure"/>
             </xpath>
-    
+        </field>
+    </record>
+
+    <record id="view_res_partner_form_inherit_custom_fields" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.custom.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='function']" position="after">
+                <field name="how_know_us" />
+            </xpath>
         </field>
     </record>
 </odoo>
