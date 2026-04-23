@@ -15,4 +15,9 @@
     'application': False,
     'auto_install': False,
     'installable': True,
+    'assets': {
+        'point_of_sale._assets_pos': [
+            'product_addons/static/src/**/*',
+        ],
+    },
 }

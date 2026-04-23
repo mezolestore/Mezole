@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_restaurant.ReceiptHeader" t-inherit="point_of_sale.ReceiptHeader" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pos-receipt-contact')]" position="attributes">
+            <attribute name="style">font-size: 19px;</attribute>
+        </xpath>
+    </t>
+
+    <t t-name="pos_restaurant.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pos-receipt')]" position="attributes">
+            <attribute name="style">font-weight: 800;</attribute>
+        </xpath>
+    </t>
+</templates>
