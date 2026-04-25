@@ -5,7 +5,7 @@
     'author': 'Sudarsanan P.R',
     'website': '',
     'summary': 'Custom fields for product templates',
-    'depends': ['base', 'sale', 'stock'],
+    'depends': ['base', 'sale', 'stock', 'point_of_sale', 'l10n_in_pos'],
     'data': [
         "views/product_template.xml",
         "views/mz_barcode_layout_38x25.xml",
