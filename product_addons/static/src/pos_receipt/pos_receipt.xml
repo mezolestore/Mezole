@@ -5,9 +5,7 @@
             <attribute name="style">font-size: 19px;</attribute>
         </xpath>
         <xpath expr="//img" position="replace">
-            <div class="d-flex flex-column align-items-center">
-                <h1>MEZOLE</h1>
-            </div>
+            
         </xpath>
         <xpath expr="//div[@t-if='props.data.company.name']" position="attributes">
             <attribute name="style">font-size: 25px;</attribute>
