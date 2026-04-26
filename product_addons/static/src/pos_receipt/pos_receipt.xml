@@ -25,4 +25,17 @@
             <attribute name="style">font-size: 22px;</attribute>
         </xpath>
     </t>
+    <t t-name="pos_mezole.OrderReceiptFooter" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[@t-if='props.data.footer']" position="before">
+            <br/>
+            <br/>
+            <div class="pos-receipt-footer" style="font-size: 12px; font-weight: 700;">
+                <p class="text-muted mb-2">1. No refunds.</p>
+                <p class="text-muted mb-2">2. Returns are accepted within 7 days only.</p>
+                <p class="text-muted mb-2">3.No warranty on fancy items.</p>
+                <p class="text-muted mb-2">4. No warranty on discounted items.</p>
+                <p class="text-muted mb-2">5. A 3-month warranty is provided for stiching and pasting only.</p>
+            </div>
+        </xpath>
+    </t>
 </templates>
