@@ -15,11 +15,6 @@
         </xpath>
     </t>
 
-    <t t-name="pos_mezole.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
-        <xpath expr="//div[hasclass('pos-receipt')]" position="attributes">
-            <attribute name="style">font-weight: 900; font-color: #000;</attribute>
-        </xpath>
-    </t>
     <t t-name="mezole.ReceiptHeader" t-inherit="point_of_sale.ReceiptHeader" t-inherit-mode="extension">
         <xpath expr="//div[hasclass('pos-receipt-center-align')]" position="attributes">
             <attribute name="style">font-size: 22px;</attribute>
