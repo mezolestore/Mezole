@@ -24,13 +24,21 @@
         <xpath expr="//div[@t-if='props.data.footer']" position="before">
             <br/>
             <br/>
-            <div class="pos-receipt-footer" style="font-size: 12px; font-weight: 700;">
-                <p class="text-muted mb-2">1. No refunds.</p>
-                <p class="text-muted mb-2">2. Returns are accepted within 7 days only.</p>
-                <p class="text-muted mb-2">3.No warranty on fancy items.</p>
-                <p class="text-muted mb-2">4. No warranty on discounted items.</p>
-                <p class="text-muted mb-2">5. A 3-month warranty is provided for stiching and pasting only.</p>
+            <div class="pos-receipt-footer" style="font-size: 15px; font-weight: 800;">
+                <p class="text-muted mb-2">* No refunds.</p>
+                <p class="text-muted mb-2">* Returns are accepted within 7 days only.</p>
+                <p class="text-muted mb-2">* No warranty on fancy items.</p>
+                <p class="text-muted mb-2">* No warranty on discounted items.</p>
+                <p class="text-muted mb-2">* A 3-month warranty is provided for stiching and pasting only.</p>
             </div>
+        </xpath>
+        <xpath expr="//Orderline" position="inside">
+            <t t-if="line.category" >
+                <div class="pos-receipt-left-padding">
+                    <span>Category : </span>
+                    <t t-out="line.category"/>
+                </div>
+            </t>
         </xpath>
     </t>
 </templates>
