@@ -22,7 +22,7 @@
         <field name="inherit_id" ref="point_of_sale.view_pos_order_pivot"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='amount_total']" position="after">
-                <field name="a_b_value" type="measure"/>
+                <field name="abvalue" type="measure"/>
                 <field name="upt_value" type="measure"/>
             </xpath>
         </field>
