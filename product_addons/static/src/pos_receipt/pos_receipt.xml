@@ -23,7 +23,6 @@
     <t t-name="pos_mezole.OrderReceiptFooter" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
         <xpath expr="//div[@t-if='props.data.footer']" position="before">
             <br/>
-            <br/>
             <div class="pos-receipt-footer" style="font-size: 13px;">
                 <p class="text-muted mb-2">* No refunds.</p>
                 <p class="text-muted mb-2">* Returns are accepted within 7 days only.</p>
