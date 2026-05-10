@@ -16,6 +16,12 @@ class PosOrder(models.Model):
         for move in self:
             move.upt_value = sum(line.qty for line in move.lines) / len(move) if move else 0.0
             
+    def _prepare_invoice_vals(self):
+        vals = super()._prepare_invoice_vals()
+        if self.date_order:
+            vals['invoice_date'] = self.date_order.date()
+        return vals
+            
             
 class PosSession(models.Model):
     _inherit = 'pos.session'

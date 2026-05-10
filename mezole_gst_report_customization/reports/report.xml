@@ -1,0 +1,14 @@
+<odoo>
+	<data>
+		<record id="gst_filing_report_xlsx" model="ir.actions.report">
+			<field name="name">GST Report</field>
+			<field name="model">gst.filing.report.wiz</field>
+			<field name="report_type">xlsx</field>
+			<field name="report_name">mezole_gst_report_customization.gst_filing_report_xlsx</field>
+			<field name="report_file">mezole_gst_report_customization.gst_filing_report_xlsx</field>
+			<field name="binding_model_id" ref="model_gst_filing_report_wiz"/>
+			<field name="binding_type">report</field>
+		</record>
+	</data>
+</odoo>
+	  

@@ -1,0 +1,54 @@
+<odoo>
+    <record id="gst_filing_wizard_form" model="ir.ui.view">
+        <field name="name">gst.filing.report</field>
+        <field name="model">gst.filing.report.wiz</field>
+        <field name="arch" type="xml">
+            <form>
+                    <group>
+                        <label for="from_date" string="Date"/>
+                            <div class="o_row">
+                                <field name="from_date" 
+                                       required="1"/>To
+                                <field name="to_date" 
+                                       required="1"/>
+                            </div>
+                    </group>
+                    <group>
+	                   <group>
+	                       <field name="types" required="1"/>
+	                   </group>
+	                </group>
+                <footer>
+                    <button name="action_print_report" 
+                            string="Print Report" 
+                            type="object" 
+                            class="oe_highlight"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="gst_filing_wizard_action" model="ir.actions.act_window">
+        <field name="name">GST Report</field>
+        <field name="res_model">gst.filing.report.wiz</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    
+    <menuitem id="menu_gst_report"
+              name="GST Report"
+              parent="account.menu_finance_reports"
+              sequence="200"/>
+              
+	    <menuitem id="menu_gst_filing_report"
+	              name="GST Filing Report"
+	              parent="mezole_gst_report_customization.menu_gst_report"
+	              action="gst_filing_wizard_action"
+	              sequence="99" />
+
+</odoo>

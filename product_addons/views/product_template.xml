@@ -38,4 +38,24 @@
             </xpath>
         </field>
     </record>
+    <record id="action_invoice_existing_pos_orders" model="ir.actions.server">
+        <field name="name">Create Invoice for POS Orders</field>
+        <field name="model_id" ref="point_of_sale.model_pos_order"/>
+        <field name="binding_model_id" ref="point_of_sale.model_pos_order"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+            for order in records:
+                if order.account_move:
+                    continue
+
+                if not order.partner_id:
+                    continue
+
+                if order.state not in ['paid', 'done']:
+                    continue
+
+                order.sudo().action_pos_order_invoice()
+        </field>
+    </record>
 </odoo>

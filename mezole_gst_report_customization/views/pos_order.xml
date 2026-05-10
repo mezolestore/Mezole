@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+ 	<record id="view_pos_order_form_inherit_mezole_gst_report_customization" model="ir.ui.view">
+	    <field name="name">pos.order.form.inherit</field>
+	    <field name="model">pos.order</field>
+	    <field name="inherit_id" ref="point_of_sale.view_pos_pos_form" />
+	    <field name="arch" type="xml">
+	        <xpath expr="//page[@name='notes']" position="after">
+	        <page string="Date Details">
+	            <group>
+	                <field name="day" readonly="1" />
+	                <field name="month" readonly="1" />
+	                <field name="year" readonly="1" />
+	                <field name="dayin_month" readonly="1" />
+	                <field name="weekin_month" readonly="1" />
+	            </group>
+	        </page>
+	        </xpath>
+	    </field>
+	</record>   
+	<record id="point_of_sale.action_report_pos_order_all" model="ir.actions.act_window">
+        <field name="view_mode">pivot,graph,tree</field>
+    </record>
+    <record id="view_report_pos_order_pivot_inherit_mezole_gst_report_customization" model="ir.ui.view">
+	    <field name="name">report.pos.order.pivot.inherit</field>
+	    <field name="model">report.pos.order</field>
+	    <field name="inherit_id" ref="point_of_sale.view_report_pos_order_pivot" />
+	    <field name="arch" type="xml">
+	        <xpath expr="//field[@name='price_total']" position="after">
+	        <field name="week_day"/>
+	        <field name="month_name"/>
+	        <field name="year"/>
+	        <field name="dayin_month"/>
+	        <field name="weekin_month"/>
+	    </xpath>
+	    </field>
+	</record>
+    </data>
+</odoo>
