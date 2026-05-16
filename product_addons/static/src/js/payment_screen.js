@@ -5,6 +5,15 @@ import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { PosOrderline } from "@point_of_sale/app/models/pos_order_line";
 import { Orderline } from "@point_of_sale/app/generic_components/orderline/orderline";
+import { PosOrder } from "@point_of_sale/app/models/pos_order";
+
+patch(PosOrder.prototype, {
+    setup(vals) {
+        super.setup(...arguments);
+        this.to_invoice = true;
+        console.log("PosOrder - setup, to_invoice set to true");
+    },
+});
 
 patch(PaymentScreen.prototype, {
 
