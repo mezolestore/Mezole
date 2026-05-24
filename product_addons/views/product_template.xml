@@ -36,6 +36,9 @@
             <xpath expr="//field[@name='function']" position="after">
                 <field name="how_know_us" />
             </xpath>
+            <xpath expr="//div[contains(@class,'o_address_format')]//field[@name='city']" position="after">
+                <field name="city_area_id" placeholder="Area" class="o_address_city"/>
+            </xpath>
         </field>
     </record>
     <record id="action_invoice_existing_pos_orders" model="ir.actions.server">
