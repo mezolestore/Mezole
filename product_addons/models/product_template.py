@@ -36,6 +36,7 @@ class ProductProduct(models.Model):
 class ResPartner(models.Model):
     _inherit = 'res.partner'
     
+    city_area_id = fields.Many2one('city.area', string='City Area')
     how_know_us = fields.Selection([
         ('walk_in', 'Walk-in'),
         ('nearby', 'Nearby Resident'),

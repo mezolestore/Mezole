@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_city_area_form" model="ir.ui.view">
+        <field name="name">city.area.form</field>
+        <field name="model">city.area</field>
+        <field name="arch" type="xml">
+            <form string="City Area">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <!-- <field name="city_id"/> -->
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_city_area_tree" model="ir.ui.view">
+        <field name="name">city.area.tree</field>
+        <field name="model">city.area</field>
+        <field name="arch" type="xml">
+            <list string="City Areas">
+                <field name="name"/>
+                <!-- <field name="city_id"/> -->
+            </list>
+        </field>
+    </record>
+    <record id="action_city_area" model="ir.actions.act_window">
+        <field name="name">City Areas</field>
+        <field name="res_model">city.area</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem
+        id="menu_city_areas"
+        name="Areas"
+        action="action_city_area"
+        parent="contacts.menu_localisation"
+        sequence="10"/>
+
+</odoo>
