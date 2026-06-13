@@ -5,10 +5,11 @@
     'author': 'Sudarsanan P.R',
     'website': '',
     'summary': 'Custom fields for product templates',
-    'depends': ['base', 'sale', 'stock', 'point_of_sale', 'l10n_in_pos'],
+    'depends': ['base', 'sale', 'stock', 'point_of_sale', 'l10n_in_pos', 'l10n_in'],
     'data': [
         "security/ir.model.access.csv",
         "views/city_area.xml",
+        'views/report_invoice_document.xml',
         "views/product_template.xml",
         'views/res_config_settings.xml',
         "views/mz_barcode_layout_38x25.xml",
