@@ -55,7 +55,6 @@ class GstFilingReport(models.AbstractModel):
                 ('invoice_date', '>=', date_from),
                 ('invoice_date', '<=', date_to),
                 ('state', '=', 'posted'),
-                ('l10n_in_gst_treatment', '=', 'regular')
             ])
             if b2b_invoices:
                 # B2B Invoices
@@ -79,7 +78,7 @@ class GstFilingReport(models.AbstractModel):
                 # Sort tax rates
                 sorted_tax_rates = sorted(tax_rates.keys())
                 # Create dynamic headers
-                headers = ['Invoice No', 'Party', 'Invoice Date', 'GSTIN']
+                headers = ['Invoice Number', 'Customer', 'Invoice Date', 'GSTIN']
                 start_col = 4
                 for rate in sorted_tax_rates:
                     worksheet.merge_range(row, start_col, row, start_col + 3, f'{rate}%', sub_heading_format)
@@ -110,21 +109,21 @@ class GstFilingReport(models.AbstractModel):
                                 for child in tax.children_tax_ids:
                                     rate = tax.amount
                                     if 'igst' in child.name.lower():
-                                        tax_data[rate]['igst'] += round((child.amount / 100) * line.price_subtotal, 2)
+                                        tax_data[rate]['igst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
                                     elif 'sgst' in child.name.lower():
-                                        tax_data[rate]['sgst'] += round((child.amount / 100) * line.price_subtotal, 2)
+                                        tax_data[rate]['sgst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
                                     elif 'cgst' in child.name.lower():
-                                        tax_data[rate]['cgst'] += round((child.amount / 100) * line.price_subtotal, 2)
-                                tax_data[rate]['taxable_value'] += line.price_subtotal
+                                        tax_data[rate]['cgst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
+                                tax_data[rate]['taxable_value'] += line.price_subtotal if invoice.move_type == 'out_invoice' else line.price_subtotal * -1
                             else:
                                 rate = tax.amount
                                 if 'igst' in tax.name.lower():
-                                    tax_data[rate]['igst'] += round((tax.amount / 100) * line.price_subtotal, 2)
+                                    tax_data[rate]['igst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
                                 elif 'sgst' in tax.name.lower():
-                                    tax_data[rate]['sgst'] += round((tax.amount / 100) * line.price_subtotal, 2)
+                                    tax_data[rate]['sgst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
                                 elif 'cgst' in tax.name.lower():
-                                    tax_data[rate]['cgst'] += round((tax.amount / 100) * line.price_subtotal, 2)
-                                tax_data[rate]['taxable_value'] += line.price_subtotal
+                                    tax_data[rate]['cgst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
+                                tax_data[rate]['taxable_value'] += line.price_subtotal if invoice.move_type == 'out_invoice' else line.price_subtotal * -1
     
                     # Write tax data to worksheet
                     start_col = 4
@@ -145,8 +144,8 @@ class GstFilingReport(models.AbstractModel):
                 ('invoice_date', '>=', date_from),
                 ('invoice_date', '<=', date_to),
                 ('state', '=', 'posted'),
-                ('l10n_in_gst_treatment', '!=', 'regular')
             ])
+            print("B2C Invoices count:", len(b2c_invoices))  # Debugging statement
     
             if b2c_invoices:
                 
@@ -171,7 +170,7 @@ class GstFilingReport(models.AbstractModel):
                 # Sort tax rates
                 sorted_tax_rates = sorted(tax_rates.keys())
                 # Create dynamic headers
-                headers = ['Invoice No11111', 'Party', 'Invoice Date', 'GSTIN']
+                headers = ['Invoice Number', 'Customer', 'Invoice Date', 'GSTIN']
                 start_col = 4
                 for rate in sorted_tax_rates:
                     worksheet.merge_range(row, start_col, row, start_col + 3, f'{rate}%', sub_heading_format)
@@ -202,21 +201,21 @@ class GstFilingReport(models.AbstractModel):
                                 for child in tax.children_tax_ids:
                                     rate = tax.amount
                                     if 'igst' in child.name.lower():
-                                        tax_data[rate]['igst'] += round((child.amount / 100) * line.price_subtotal, 2)
+                                        tax_data[rate]['igst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
                                     elif 'sgst' in child.name.lower():
-                                        tax_data[rate]['sgst'] += round((child.amount / 100) * line.price_subtotal, 2)
+                                        tax_data[rate]['sgst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
                                     elif 'cgst' in child.name.lower():
-                                        tax_data[rate]['cgst'] += round((child.amount / 100) * line.price_subtotal, 2)
-                                tax_data[rate]['taxable_value'] += line.price_subtotal
+                                        tax_data[rate]['cgst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
+                                tax_data[rate]['taxable_value'] += line.price_subtotal if invoice.move_type == 'out_invoice' else line.price_subtotal * -1
                             else:
                                 rate = tax.amount
                                 if 'igst' in tax.name.lower():
-                                    tax_data[rate]['igst'] += round((tax.amount / 100) * line.price_subtotal, 2)
+                                    tax_data[rate]['igst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
                                 elif 'sgst' in tax.name.lower():
-                                    tax_data[rate]['sgst'] += round((tax.amount / 100) * line.price_subtotal, 2)
+                                    tax_data[rate]['sgst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
                                 elif 'cgst' in tax.name.lower():
-                                    tax_data[rate]['cgst'] += round((tax.amount / 100) * line.price_subtotal, 2)
-                                tax_data[rate]['taxable_value'] += line.price_subtotal
+                                    tax_data[rate]['cgst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
+                                tax_data[rate]['taxable_value'] += line.price_subtotal if invoice.move_type == 'out_invoice' else line.price_subtotal * -1
     
                     # Write tax data to worksheet
                     start_col = 4
@@ -233,7 +232,7 @@ class GstFilingReport(models.AbstractModel):
             worksheet.merge_range('A1:G2', f'GST HSN Report - {company_name}', heading_format)
             row = 6
             b2b_invoices = self.env['account.move'].search([
-                ('move_type', '=', 'out_invoice'),
+                ('move_type', 'in', ['out_invoice','out_refund']),
                 ('invoice_date', '>=', date_from),
                 ('invoice_date', '<=', date_to),
                 ('state', '=', 'posted'),
@@ -241,12 +240,12 @@ class GstFilingReport(models.AbstractModel):
             ])
             
             b2c_invoices = self.env['account.move'].search([
-                ('move_type', '=', 'out_invoice'),
+                ('move_type', 'in', ['out_invoice','out_refund']),
                 ('invoice_date', '>=', date_from),
                 ('invoice_date', '<=', date_to),
                 ('state', '=', 'posted'),
-                ('l10n_in_gst_treatment', '!=', 'regular')
             ])
+            print("B2C Invoices count:", len(b2c_invoices))
         
             # Function to handle HSN grouping and tax calculation
             def process_invoices(invoices, worksheet, row, title):
@@ -269,24 +268,24 @@ class GstFilingReport(models.AbstractModel):
                                 }
         
                             # Aggregate data by HSN code and tax rate
-                            hsn_data[(hsn_code, tax_rate)]['taxable_value'] += line.price_subtotal
+                            hsn_data[(hsn_code, tax_rate)]['taxable_value'] += line.price_subtotal if invoice.move_type == 'out_invoice' else line.price_subtotal * -1
                             hsn_data[(hsn_code, tax_rate)]['quantity'] += line.quantity
                             
                             if tax.children_tax_ids:
                                 for child in tax.children_tax_ids:
                                     if 'igst' in child.name.lower():
-                                        hsn_data[(hsn_code, tax_rate)]['igst'] += round((child.amount / 100) * line.price_subtotal, 2)
+                                        hsn_data[(hsn_code, tax_rate)]['igst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
                                     elif 'sgst' in child.name.lower():
-                                        hsn_data[(hsn_code, tax_rate)]['sgst'] += round((child.amount / 100) * line.price_subtotal, 2)
+                                        hsn_data[(hsn_code, tax_rate)]['sgst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
                                     elif 'cgst' in child.name.lower():
-                                        hsn_data[(hsn_code, tax_rate)]['cgst'] += round((child.amount / 100) * line.price_subtotal, 2)
+                                        hsn_data[(hsn_code, tax_rate)]['cgst'] += round((child.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (child.amount / 100) * line.price_subtotal * -1, 2)
                             else:
                                 if 'igst' in tax.name.lower():
-                                    hsn_data[(hsn_code, tax_rate)]['igst'] += round((tax.amount / 100) * line.price_subtotal, 2)
+                                    hsn_data[(hsn_code, tax_rate)]['igst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
                                 elif 'sgst' in tax.name.lower():
-                                    hsn_data[(hsn_code, tax_rate)]['sgst'] += round((tax.amount / 100) * line.price_subtotal, 2)
+                                    hsn_data[(hsn_code, tax_rate)]['sgst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
                                 elif 'cgst' in tax.name.lower():
-                                    hsn_data[(hsn_code, tax_rate)]['cgst'] += round((tax.amount / 100) * line.price_subtotal, 2)
+                                    hsn_data[(hsn_code, tax_rate)]['cgst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
                 
                 # Determine the columns based on the presence of tax values
                 has_igst = any(values['igst'] > 0 for values in hsn_data.values())
