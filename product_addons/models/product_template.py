@@ -15,6 +15,12 @@ class ProductTemplate(models.Model):
             if not val.get('barcode'):
                 val['barcode'] = self.env['ir.sequence'].next_by_code('product.barcode')
         return super(ProductTemplate, self).create(vals_list)
+    
+    @api.model
+    def _load_pos_data_fields(self, config_id):
+        result = super()._load_pos_data_fields(config_id)
+        result += ['qty_available']
+        return result
 
     
 class ProductProduct(models.Model):
@@ -32,6 +38,12 @@ class ProductProduct(models.Model):
             if not val.get('barcode'):
                 val['barcode'] = self.env['ir.sequence'].next_by_code('product.barcode')
         return super(ProductProduct, self).create(vals_list)
+    
+    @api.model
+    def _load_pos_data_fields(self, config_id):
+        result = super()._load_pos_data_fields(config_id)
+        result += ['qty_available']
+        return result
     
 class ResPartner(models.Model):
     _inherit = 'res.partner'
