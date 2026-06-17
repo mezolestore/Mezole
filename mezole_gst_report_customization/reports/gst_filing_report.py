@@ -55,6 +55,7 @@ class GstFilingReport(models.AbstractModel):
                 ('invoice_date', '>=', date_from),
                 ('invoice_date', '<=', date_to),
                 ('state', '=', 'posted'),
+                ('l10n_in_gst_treatment', '=', 'regular')
             ])
             if b2b_invoices:
                 # B2B Invoices
@@ -62,31 +63,49 @@ class GstFilingReport(models.AbstractModel):
                 row += 2
                 # Collect all unique tax rates
                 tax_rates = {}
+                has_non_tax_lines = False
                 for invoice in b2b_invoices:
                     for line in invoice.invoice_line_ids:
+                        if not line.tax_ids:
+                            has_non_tax_lines = True
+                            continue
                         for tax in line.tax_ids:
                             if tax.children_tax_ids:
                                 for child in tax.children_tax_ids:
                                     child_rate = tax.amount
                                     if child_rate not in tax_rates:
-                                        tax_rates[child_rate] = {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0}
+                                        tax_rates[child_rate] = {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0, 'others': 0}
                             else:
                                 rate = tax.amount
                                 if rate not in tax_rates:
-                                    tax_rates[rate] = {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0}
-    
+                                    tax_rates[rate] = {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0, 'others': 0}
+                if has_non_tax_lines:
+                    tax_rates['No Tax'] = {
+                        'taxable_value': 0,
+                        'igst': 0,
+                        'cgst': 0,
+                        'sgst': 0,
+                        'others': 0,
+                    }
+
+
                 # Sort tax rates
-                sorted_tax_rates = sorted(tax_rates.keys())
+                numeric_rates = sorted([r for r in tax_rates.keys() if r != 'No Tax'])
+                if 'No Tax' in tax_rates:
+                    numeric_rates.append('No Tax')
+
+                sorted_tax_rates = numeric_rates
                 # Create dynamic headers
                 headers = ['Invoice Number', 'Customer', 'Invoice Date', 'GSTIN']
                 start_col = 4
                 for rate in sorted_tax_rates:
-                    worksheet.merge_range(row, start_col, row, start_col + 3, f'{rate}%', sub_heading_format)
+                    worksheet.merge_range(row, start_col, row, start_col + 4, f'{rate}%', sub_heading_format)
                     worksheet.write(row + 1, start_col, 'Taxable Value', sub_heading_format)
                     worksheet.write(row + 1, start_col + 1, 'IGST', sub_heading_format)
                     worksheet.write(row + 1, start_col + 2, 'CGST', sub_heading_format)
                     worksheet.write(row + 1, start_col + 3, 'SGST', sub_heading_format)
-                    start_col += 4
+                    worksheet.write(row + 1, start_col + 4, 'Others', sub_heading_format)
+                    start_col += 5
     
                 worksheet.write_row(row, 0, headers, sub_heading_format)
     
@@ -100,10 +119,17 @@ class GstFilingReport(models.AbstractModel):
                     worksheet.write(row, col + 3, invoice.partner_id.vat)
     
                     # Initialize tax data
-                    tax_data = {rate: {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0} for rate in sorted_tax_rates}
+                    tax_data = {rate: {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0, 'others': 0} for rate in sorted_tax_rates}
     
                     # Aggregate tax data
                     for line in invoice.invoice_line_ids:
+                        if not line.tax_ids:
+                            tax_data['No Tax']['taxable_value'] += (
+                                line.price_subtotal
+                                if invoice.move_type == 'out_invoice'
+                                else line.price_subtotal * -1
+                            )
+                            continue
                         for tax in line.tax_ids:
                             if tax.children_tax_ids:
                                 for child in tax.children_tax_ids:
@@ -132,7 +158,8 @@ class GstFilingReport(models.AbstractModel):
                         worksheet.write(row, col + start_col + 1, tax_data[rate]['igst'])
                         worksheet.write(row, col + start_col + 2, tax_data[rate]['cgst'])
                         worksheet.write(row, col + start_col + 3, tax_data[rate]['sgst'])
-                        start_col += 4
+                        worksheet.write(row, col + start_col + 4, tax_data[rate]['others'])
+                        start_col += 5
     
                     row += 1
     
@@ -154,31 +181,49 @@ class GstFilingReport(models.AbstractModel):
                 row += 2
                 # Collect all unique tax rates
                 tax_rates = {}
+                has_non_tax_lines = False
                 for invoice in b2c_invoices:
                     for line in invoice.invoice_line_ids:
+                        if not line.tax_ids:
+                            has_non_tax_lines = True
+                            continue
+
                         for tax in line.tax_ids:
                             if tax.children_tax_ids:
                                 for child in tax.children_tax_ids:
                                     child_rate = tax.amount
                                     if child_rate not in tax_rates:
-                                        tax_rates[child_rate] = {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0}
+                                        tax_rates[child_rate] = {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0, 'others': 0}
                             else:
                                 rate = tax.amount
                                 if rate not in tax_rates:
-                                    tax_rates[rate] = {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0}
+                                    tax_rates[rate] = {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0, 'others': 0}
+                if has_non_tax_lines:
+                    tax_rates['No Tax'] = {
+                        'taxable_value': 0,
+                        'igst': 0,
+                        'cgst': 0,
+                        'sgst': 0,
+                        'others': 0,
+                    }
     
                 # Sort tax rates
-                sorted_tax_rates = sorted(tax_rates.keys())
+                numeric_rates = sorted([r for r in tax_rates.keys() if r != 'No Tax'])
+                if 'No Tax' in tax_rates:
+                    numeric_rates.append('No Tax')
+
+                sorted_tax_rates = numeric_rates
                 # Create dynamic headers
                 headers = ['Invoice Number', 'Customer', 'Invoice Date', 'GSTIN']
                 start_col = 4
                 for rate in sorted_tax_rates:
-                    worksheet.merge_range(row, start_col, row, start_col + 3, f'{rate}%', sub_heading_format)
+                    worksheet.merge_range(row, start_col, row, start_col + 4, f'{rate}%', sub_heading_format)
                     worksheet.write(row + 1, start_col, 'Taxable Value', sub_heading_format)
                     worksheet.write(row + 1, start_col + 1, 'IGST', sub_heading_format)
                     worksheet.write(row + 1, start_col + 2, 'CGST', sub_heading_format)
                     worksheet.write(row + 1, start_col + 3, 'SGST', sub_heading_format)
-                    start_col += 4
+                    worksheet.write(row + 1, start_col + 4, 'Others', sub_heading_format)
+                    start_col += 5
     
                 worksheet.write_row(row, 0, headers, sub_heading_format)
     
@@ -192,10 +237,17 @@ class GstFilingReport(models.AbstractModel):
                     worksheet.write(row, col + 3, invoice.partner_id.vat)
     
                     # Initialize tax data
-                    tax_data = {rate: {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0} for rate in sorted_tax_rates}
+                    tax_data = {rate: {'taxable_value': 0, 'igst': 0, 'cgst': 0, 'sgst': 0, 'others': 0} for rate in sorted_tax_rates}
     
                     # Aggregate tax data
                     for line in invoice.invoice_line_ids:
+                        if not line.tax_ids:
+                            tax_data['No Tax']['taxable_value'] += (
+                                line.price_subtotal
+                                if invoice.move_type == 'out_invoice'
+                                else line.price_subtotal * -1
+                            )
+                            continue
                         for tax in line.tax_ids:
                             if tax.children_tax_ids:
                                 for child in tax.children_tax_ids:
@@ -224,7 +276,8 @@ class GstFilingReport(models.AbstractModel):
                         worksheet.write(row, col + start_col + 1, tax_data[rate]['igst'])
                         worksheet.write(row, col + start_col + 2, tax_data[rate]['cgst'])
                         worksheet.write(row, col + start_col + 3, tax_data[rate]['sgst'])
-                        start_col += 4
+                        worksheet.write(row, col + start_col + 4, tax_data[rate]['others'])
+                        start_col += 5
     
                     row += 1
     
@@ -251,9 +304,12 @@ class GstFilingReport(models.AbstractModel):
             def process_invoices(invoices, worksheet, row, title):
                 # Initialize a dictionary to hold aggregated data by HSN code and tax rate
                 hsn_data = {}
-        
+                has_non_tax_lines = False
                 for invoice in invoices:
                     for line in invoice.invoice_line_ids:
+                        if not line.tax_ids:
+                            has_non_tax_lines = True
+                            continue
                         hsn_code = line.product_id.l10n_in_hsn_code
                         for tax in line.tax_ids:
                             tax_rate = tax.amount
@@ -264,6 +320,7 @@ class GstFilingReport(models.AbstractModel):
                                     'igst': 0,
                                     'cgst': 0,
                                     'sgst': 0,
+                                    'others': 0,
                                     'quantity': 0
                                 }
         
@@ -286,11 +343,26 @@ class GstFilingReport(models.AbstractModel):
                                     hsn_data[(hsn_code, tax_rate)]['sgst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
                                 elif 'cgst' in tax.name.lower():
                                     hsn_data[(hsn_code, tax_rate)]['cgst'] += round((tax.amount / 100) * line.price_subtotal if invoice.move_type == 'out_invoice' else (tax.amount / 100) * line.price_subtotal * -1, 2)
+                if has_non_tax_lines:
+                    hsn_data[('NA', 'No Tax')] = {
+                        'taxable_value': 0,
+                        'igst': 0,
+                        'cgst': 0,
+                        'sgst': 0,
+                        'others': 0,
+                        'quantity': 0
+                    }
+                    for invoice in invoices:
+                        for line in invoice.invoice_line_ids:
+                            if not line.tax_ids:
+                                hsn_data[('NA', 'No Tax')]['taxable_value'] += line.price_subtotal if invoice.move_type == 'out_invoice' else line.price_subtotal * -1
+                                hsn_data[('NA', 'No Tax')]['quantity'] += line.quantity
                 
                 # Determine the columns based on the presence of tax values
                 has_igst = any(values['igst'] > 0 for values in hsn_data.values())
                 has_cgst = any(values['cgst'] > 0 for values in hsn_data.values())
                 has_sgst = any(values['sgst'] > 0 for values in hsn_data.values())
+                has_others = any(values['others'] > 0 for values in hsn_data.values())
         
                 # Header preparation
                 headers = ['HSN Code', 'Taxable Value', 'Tax Rate']
@@ -300,6 +372,8 @@ class GstFilingReport(models.AbstractModel):
                     headers.append('CGST')
                 if has_sgst:
                     headers.append('SGST')
+                if has_others:
+                    headers.append('Others')
                 headers.append('Quantity(Nos)')
                 
                 # Write the header
@@ -310,13 +384,15 @@ class GstFilingReport(models.AbstractModel):
         
                 # Write the data
                 for (hsn_code, tax_rate), values in hsn_data.items():
-                    row_data = [hsn_code, values['taxable_value'], f"{tax_rate}%"]
+                    row_data = [hsn_code, values['taxable_value'], tax_rate if tax_rate == 'No Tax' else f"{tax_rate}%"]
                     if has_igst:
                         row_data.append(values['igst'])
                     if has_cgst:
                         row_data.append(values['cgst'])
                     if has_sgst:
                         row_data.append(values['sgst'])
+                    if has_others:
+                        row_data.append(values['others'])
                     row_data.append(values['quantity'])
         
                     worksheet.write_row(row, 0, row_data)
