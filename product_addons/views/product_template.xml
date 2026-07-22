@@ -16,6 +16,18 @@
     
         </field>
     </record>
+    <record id="view_product_template_form_inherit_hide_fields" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.custom.fields.hide</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[@name='group_standard_price']//field[@name='standard_price']" position="attributes">
+                <attribute name="groups">base.group_no_one</attribute>
+            </xpath>
+    
+        </field>
+    </record>
     <record id="view_pos_order_pivot_inherit_custom_fields" model="ir.ui.view">
         <field name="name">pos.order.pivot.inherit.custom.fields</field>
         <field name="model">pos.order</field>
@@ -59,6 +71,23 @@
                     continue
 
                 order.sudo().action_pos_order_invoice()
+        </field>
+    </record>
+        <record id="view_stock_picking_form_inherit_total" model="ir.ui.view">
+        <field name="name">view.stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page/field[@name='move_ids_without_package']/list/field[@name='quantity']" position="after">
+                <field name="total_value" groups="base.group_no_one"/>
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page/field[@name='move_ids_without_package']" position="after">
+                <group string="Total Value" colspan="4" groups="base.group_no_one">
+                    <group>
+                        <field name="total_value" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo>

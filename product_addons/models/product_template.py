@@ -62,3 +62,25 @@ class ResPartner(models.Model):
         ('event', 'Event/Promotion'),
         ('other', 'Other'),
     ], string='How did you hear about us?')
+    
+class StockMove(models.Model):
+    _inherit = 'stock.move'
+    
+    total_value = fields.Float(string='Total Value', compute='_compute_total_value', store=True)
+
+    def _compute_total_value(self):
+        for move in self:
+            move.total_value = move.product_id.standard_price * move.quantity
+            
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+    
+    total_value = fields.Float(string='Total Value', compute='_compute_total_value')
+
+    def _compute_total_value(self):
+        for picking in self:
+            if picking.move_ids:
+                if picking.picking_type_code == 'incoming':
+                    picking.total_value = sum(move.total_value for move in picking.move_ids)
+                elif picking.picking_type_code == 'outgoing':
+                    picking.total_value = -sum(move.total_value for move in picking.move_ids)
