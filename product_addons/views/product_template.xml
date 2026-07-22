@@ -84,6 +84,7 @@
             <xpath expr="/form/sheet/notebook/page/field[@name='move_ids_without_package']" position="after">
                 <group string="Total Value" colspan="4" groups="base.group_no_one">
                     <group>
+                        <field name="total_quantity" readonly="1"/>
                         <field name="total_value" readonly="1"/>
                     </group>
                 </group>

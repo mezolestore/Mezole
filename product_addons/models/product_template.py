@@ -76,10 +76,12 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
     
     total_value = fields.Float(string='Total Value', compute='_compute_total_value')
+    total_quantity = fields.Float(string='Total Quantity', compute='_compute_total_value')
 
     def _compute_total_value(self):
         for picking in self:
             if picking.move_ids:
+                picking.total_quantity = sum(move.quantity for move in picking.move_ids)
                 if picking.picking_type_code == 'incoming':
                     picking.total_value = sum(move.total_value for move in picking.move_ids)
                 elif picking.picking_type_code == 'outgoing':
