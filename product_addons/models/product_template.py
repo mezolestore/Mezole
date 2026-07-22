@@ -68,6 +68,7 @@ class StockMove(models.Model):
     
     total_value = fields.Float(string='Total Value', compute='_compute_total_value', store=True)
 
+    @api.depends('product_id', 'quantity')
     def _compute_total_value(self):
         for move in self:
             move.total_value = move.product_id.standard_price * move.quantity
@@ -75,9 +76,10 @@ class StockMove(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
     
-    total_value = fields.Float(string='Total Value', compute='_compute_total_value')
-    total_quantity = fields.Float(string='Total Quantity', compute='_compute_total_value')
+    total_value = fields.Float(string='Total Value', compute='_compute_total_value', store=True)
+    total_quantity = fields.Float(string='Total Quantity', compute='_compute_total_value', store=True)
 
+    @api.depends('move_ids.total_value')
     def _compute_total_value(self):
         for picking in self:
             if picking.move_ids:
