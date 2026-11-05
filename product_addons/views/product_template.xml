@@ -9,6 +9,7 @@
                 <group string="Product Details">
                     <field name="product_color"/>
                     <field name="product_size"/>
+                    <field name="material_type_id"/>
                     <field name="upc_code"/>
                     <field name="is_upt_counted"/>
                 </group>
@@ -16,18 +17,19 @@
     
         </field>
     </record>
-    <!-- <record id="view_product_template_form_inherit_hide_fields" model="ir.ui.view">
-        <field name="name">product.template.form.inherit.custom.fields.hide</field>
+    <record id="product_template_search_view_inherit_mezole" model="ir.ui.view">
+        <field name="name">product.template.search.inherit.mezole</field>
         <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_form_view"/>
-        <field name="arch" type="xml"> -->
-
-            <!-- <xpath expr="//group[@name='group_standard_price']//field[@name='standard_price']" position="attributes">
-                <attribute name="groups">base.group_no_one</attribute>
-            </xpath> -->
-    
-        <!-- </field>
-    </record> -->
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <filter name="combo" position="after">
+                <filter name="material_type_id" string="Material" domain="[('material_type_id','!=',False)]"/>
+            </filter>
+            <filter name="categ_id" position="after">
+                <filter string="Material" name="material_type_id" context="{'group_by':'material_type_id'}"/>
+            </filter>
+        </field>
+    </record>
     <record id="view_pos_order_pivot_inherit_custom_fields" model="ir.ui.view">
         <field name="name">pos.order.pivot.inherit.custom.fields</field>
         <field name="model">pos.order</field>

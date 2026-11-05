@@ -9,9 +9,10 @@
     'data': [
         "security/ir.model.access.csv",
         "views/city_area.xml",
-        'views/report_invoice_document.xml',
+        "views/report_invoice_document.xml",
         "views/product_template.xml",
-        'views/res_config_settings.xml',
+        "views/material_types.xml",
+        "views/res_config_settings.xml",
         "views/mz_barcode_layout_38x25.xml",
     ],
 

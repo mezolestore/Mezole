@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_city_area,access.city.area,model_city_area,base.group_user,1,1,1,1
+access_material_types,access.material.types,model_material_types,base.group_user,1,1,1,1

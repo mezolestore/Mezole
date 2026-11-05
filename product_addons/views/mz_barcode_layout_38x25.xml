@@ -53,8 +53,14 @@
 
 </t>
 
-^FT30,188^A0N,22,20^FD<t t-esc="today.strftime('%B')[:2].upper() + today.strftime('%y')"/>^FS
-
+^FT30,188^A0N,22,20^FD
+<t t-if="order_date_done">
+    <t t-esc="order_date_done"/>
+</t>
+<t t-else="">
+<t t-esc="today.strftime('%B')[:3].upper() + today.strftime('%y')"/>
+</t>
+^FS
 <t t-if="len(product_info['display_name_markup']) &lt; 20">
     ^FT350,50^A0N,25,20^FD<t t-out="product_info['display_name_markup']"/>^FS
 </t>
@@ -93,7 +99,14 @@
     </t>
 </t>
 
-^FT360,188^A0N,22,20^FD<t t-esc="today.strftime('%B')[:2].upper() + today.strftime('%y')"/>^FS
+^FT360,188^A0N,22,20^FD
+<t t-if="order_date_done">
+    <t t-esc="order_date_done"/>
+</t>
+<t t-else="">
+<t t-esc="today.strftime('%B')[:3].upper() + today.strftime('%y')"/>
+</t>
+^FS
 
 ^XZ
                 </t>

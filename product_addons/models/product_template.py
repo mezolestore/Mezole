@@ -1,4 +1,10 @@
+    # -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
 from odoo import models, fields, api
+from collections import defaultdict
+from odoo.tools import float_compare, float_is_zero
+
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
@@ -8,6 +14,7 @@ class ProductTemplate(models.Model):
     upc_code = fields.Char(string='UPC Code')
     mrp_price = fields.Float(string='MRP Price')
     is_upt_counted = fields.Boolean(string='Is UPT Counted')
+    material_type_id = fields.Many2one('material.types', string='Material Type')
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -27,6 +34,7 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
     
     mrp_price = fields.Float(string='MRP Price', related='product_tmpl_id.mrp_price', store=True)
+    material_type_id = fields.Many2one('material.types', string='Material Type')
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -88,3 +96,40 @@ class StockPicking(models.Model):
                     picking.total_value = sum(move.total_value for move in picking.move_ids)
                 elif picking.picking_type_code == 'outgoing':
                     picking.total_value = -sum(move.total_value for move in picking.move_ids)
+                    
+
+class ProductLabelLayout(models.TransientModel):
+    _inherit = 'product.label.layout'
+
+    def _prepare_report_data(self):
+        xml_id, data = super()._prepare_report_data()
+
+        if 'zpl' in self.print_format:
+            xml_id = 'stock.label_product_product'
+
+        quantities = defaultdict(int)
+        uom_unit = self.env.ref('uom.product_uom_categ_unit', raise_if_not_found=False)
+        if self.move_quantity == 'move' and self.move_ids and all(float_is_zero(ml.quantity, precision_rounding=ml.product_uom_id.rounding) for ml in self.move_ids.move_line_ids):
+            for move in self.move_ids:
+                if move.product_uom.category_id == uom_unit:
+                    use_reserved = float_compare(move.quantity, 0, precision_rounding=move.product_uom.rounding) > 0
+                    useable_qty = move.quantity if use_reserved else move.product_uom_qty
+                    if not float_is_zero(useable_qty, precision_rounding=move.product_uom.rounding):
+                        quantities[move.product_id.id] += useable_qty
+            data['quantity_by_product'] = {p: int(q) for p, q in quantities.items()}
+        elif self.move_quantity == 'move' and self.move_ids.move_line_ids:
+            custom_barcodes = defaultdict(list)
+            for line in self.move_ids.move_line_ids:
+                if line.product_uom_id.category_id == uom_unit:
+                    if (line.lot_id or line.lot_name) and int(line.quantity):
+                        custom_barcodes[line.product_id.id].append((line.lot_id.name or line.lot_name, int(line.quantity)))
+                        continue
+                    quantities[line.product_id.id] += line.quantity
+                else:
+                    quantities[line.product_id.id] = 1
+            # Pass only products with some quantity done to the report
+            data['quantity_by_product'] = {p: int(q) for p, q in quantities.items() if q}
+            data['custom_barcodes'] = custom_barcodes
+            data['order_date_done'] = str(self.move_ids.picking_id.date_done.strftime('%B')[:3].upper() ) + str(self.move_ids.picking_id.date_done.year)
+
+        return xml_id, data
