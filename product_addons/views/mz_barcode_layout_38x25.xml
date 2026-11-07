@@ -30,6 +30,7 @@
     <t t-if="product.categ_id and product.categ_id.name">
 ^FT30,75^A0N,22,18^FD<t t-out="product.categ_id.name"/>^FS
 </t>
+</t>
 
 
 <t t-if="price_included">
@@ -80,6 +81,7 @@
 <t t-else="">
     <t t-if="product.categ_id and product.categ_id.name">
 ^FT360,75^A0N,22,18^FD<t t-out="product.categ_id.name"/>^FS
+</t>
 </t>
 
 
