@@ -130,6 +130,8 @@ class ProductLabelLayout(models.TransientModel):
             # Pass only products with some quantity done to the report
             data['quantity_by_product'] = {p: int(q) for p, q in quantities.items() if q}
             data['custom_barcodes'] = custom_barcodes
-            data['order_date_done'] = str(self.move_ids.picking_id.date_done.strftime('%B')[:3].upper() ) + str(self.move_ids.picking_id.date_done.year)
-
+            if self.move_ids.picking_id.date_done:
+                data['order_date_done'] = str(self.move_ids.picking_id.date_done.strftime('%B')[:3].upper() ) + str(self.move_ids.picking_id.date_done.year)
+            elif self.move_ids.picking_id.scheduled_date:
+                data['order_date_done'] = str(self.move_ids.picking_id.scheduled_date.strftime('%B')[:3].upper() ) + str(self.move_ids.picking_id.scheduled_date.year)
         return xml_id, data
