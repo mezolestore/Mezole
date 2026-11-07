@@ -23,7 +23,11 @@
 </t>
 
 
-<t t-if="product.categ_id and product.categ_id.name">
+<t t-if="product.categ_id and product.categ_id.parent_id and product.categ_id.parent_id.name">
+^FT30,75^A0N,22,18^FD<t t-out="product.categ_id.parent_id.name"/>^FS
+</t>
+<t t-else="">
+    <t t-if="product.categ_id and product.categ_id.name">
 ^FT30,75^A0N,22,18^FD<t t-out="product.categ_id.name"/>^FS
 </t>
 
@@ -58,7 +62,7 @@
     <t t-esc="order_date_done"/>
 </t>
 <t t-else="">
-<t t-esc="today.strftime('%B')[:3].upper() + today.strftime('%y')"/>
+<t t-esc="today.strftime('%B')[:3].upper() + today.strftime('%y')[:2]"/>
 </t>
 ^FS
 <t t-if="len(product.name) &lt; 20">
@@ -70,7 +74,11 @@
 </t>
 
 
-<t t-if="product.categ_id and product.categ_id.name">
+<t t-if="product.categ_id and product.categ_id.parent_id and product.categ_id.parent_id.name">
+^FT360,75^A0N,22,18^FD<t t-out="product.categ_id.parent_id.name"/>^FS
+</t>
+<t t-else="">
+    <t t-if="product.categ_id and product.categ_id.name">
 ^FT360,75^A0N,22,18^FD<t t-out="product.categ_id.name"/>^FS
 </t>
 
@@ -104,7 +112,7 @@
     <t t-esc="order_date_done"/>
 </t>
 <t t-else="">
-<t t-esc="today.strftime('%B')[:3].upper() + today.strftime('%y')"/>
+<t t-esc="today.strftime('%B')[:3].upper() + today.strftime('%y')[:2]"/>
 </t>
 ^FS
 
